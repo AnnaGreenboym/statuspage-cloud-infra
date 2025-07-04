@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: status-page-server
+  namespace: dev
+  labels:
+    app: status-page-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: status-page-server
+  template:
+    metadata:
+      labels:
+        app: status-page-server
+    spec:
+      containers:
+      - name: status-page-server
+        image: <IMAGE_FROM_ECR>
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        - containerPort: 8001
+        env:
+        - name: ALLOWED_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              name: statuspage-config
+              key: ALLOWED_HOSTS
+        - name: DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: statuspage-config
+              key: DATABASE_NAME
+        - name: DATABASE_USER
+          valueFrom:
+            configMapKeyRef:
+              name: statuspage-config
+              key: DATABASE_USER
+        - name: DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: statuspage-config
+              key: DATABASE_HOST
+        - name: DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: statuspage-config
+              key: DATABASE_PORT
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: statuspage-config
+              key: REDIS_HOST
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: statuspage-config
+              key: REDIS_PORT
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: statuspage-secret
+              key: DATABASE_PASSWORD
+#        - name: REDIS_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              name: statuspage-secret
+#              key: REDIS_PASSWORD             
+        volumeMounts:
+          - name: static-files
+            mountPath: /temp  
+        #command: [ "tail", "-f", "/dev/null" ]                
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            echo 'Running upgrade.sh...' &&
+            bash /opt/upgrade.sh &&
+
+            mkdir -p /temp/static &&
+            cp /opt/contrib/nginx.conf /temp/ &&
+            cp -r /opt/statuspage/static/* /temp/static/ &&
+
+            source /opt/venv/bin/activate &&
+            gunicorn --bind 0.0.0.0:8000 statuspage.wsgi:application \
+              --chdir /opt/statuspage --workers 3 --log-level debug --timeout 120
+      volumes:
+        - name: static-files
+          persistentVolumeClaim:
+            claimName: status-page-pvc-dev
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: status-page-server
+spec:
+  type: ClusterIP
+  selector:
+    app:  status-page-server
+  ports:
+    - name: appport
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
+      

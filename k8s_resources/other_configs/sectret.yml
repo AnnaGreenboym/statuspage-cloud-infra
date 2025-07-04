@@ -1,0 +1,30 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: aws-ssm
+spec:
+  provider:
+    aws:
+      service: SSM
+      region: us-east-1
+      auth:
+        jwt:
+          serviceAccountRef:
+            name: external-secrets-sa
+            namespace: external-secrets
+
+kind: ExternalSecret
+metadata:
+  name: argo-cert-env
+  namespace: argocd
+spec:
+  secretStoreRef:
+    name: aws-ssm
+    kind: ClusterSecretStore
+  target:
+    name: argo-cert-env                  
+    creationPolicy: Owner
+  data:
+    - secretKey: ACM_CERT_ARN
+      remoteRef:
+        key: /acm/arn/monitoring         # matches AWS SSM
