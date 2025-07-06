@@ -3,6 +3,8 @@
 This repository showcases the end-to-end deployment of a cloud-native Status Page application using AWS and Kubernetes.  
 The project was developed as a practical learning experience to explore DevOps tools, CI/CD pipelines, observability, and cloud infrastructure.
 
+![image](https://github.com/user-attachments/assets/353d1cb6-815d-4610-8006-59b61a77e434)
+
 ---
 
 ## Architecture Overview
@@ -41,6 +43,10 @@ Key components of the deployed infrastructure:
 - Metrics collection via **Prometheus**
 - Visualization through **Grafana**
 - Includes dashboards for system health, pod status, and performance trends
+
+![image](https://github.com/user-attachments/assets/de49fa1c-acc4-4bc8-a89c-1433ddb58672) ![image](https://github.com/user-attachments/assets/dc3dac93-f2bc-4c0b-97ed-04c41d6cefb1)
+
+
 
 ---
 
