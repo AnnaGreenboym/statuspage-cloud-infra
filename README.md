@@ -65,7 +65,6 @@ Key components of the deployed infrastructure:
 
 Total estimate: **$206.49/month**
 
-> Breakdown includes EKS, RDS, NAT Gateway, and other supporting services.
 
 ---
 
