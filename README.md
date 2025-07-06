@@ -3,7 +3,8 @@
 This repository showcases the end-to-end deployment of a cloud-native Status Page application using AWS and Kubernetes.  
 The project was developed as a practical learning experience to explore DevOps tools, CI/CD pipelines, observability, and cloud infrastructure.
 
-![Screenshot 2025-04-02 175636](https://github.com/user-attachments/assets/783777e3-1287-49ab-9929-5c716ae72e5f)
+![Screenshot 2025-04-02 175410](https://github.com/user-attachments/assets/d5fcf799-41f6-4303-b24c-2e782070493e)
+
 
 
 ---
